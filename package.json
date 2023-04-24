@@ -6,6 +6,7 @@
     "dev": "nodemon src/server/main.js -w src/server",
     "start": "NODE_ENV=production node src/server/main.js",
     "build": "vite build",
+    "test": "vitest",
     "prepare": "husky install"
   },
   "devDependencies": {
@@ -15,7 +16,8 @@
     "husky": "^8.0.3",
     "lint-staged": "^13.2.1",
     "nodemon": "^2.0.20",
-    "vite": "^4.0.4"
+    "vite": "^4.0.4",
+    "vitest": "^0.30.1"
   },
   "dependencies": {
     "express": "^4.18.2",
