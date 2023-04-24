@@ -1,0 +1,31 @@
+:root {
+  font-family: "Raleway", Inter, Avenir, Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  line-height: 24px;
+  /* font-weight: 400; */
+
+  /* color-scheme: light dark; */
+  /* color: rgba(255, 255, 255, 0.87); */
+  /* background-color: #242424; */
+
+  --gray300: rgb(229 231 235);
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  padding: 10px;
+  color: #464646;
+}
+
+.main-menu {
+  margin: 20px 0;
+}
+
+.section-right {
+  margin-top: 40px;
+}
