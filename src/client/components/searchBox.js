@@ -1,3 +1,5 @@
+import bus from "../eventBus";
+
 const template = document.createElement("template");
 
 template.innerHTML = `
@@ -43,9 +45,9 @@ export class SearchBox extends HTMLElement {
   }
 
   /**
-   *@param {evebt} e
+   *@param {event} e
    */
   inputEventHandler(e) {
-    console.log("e ", e.target.value);
+    bus.publish("filterProds", e.target.value);
   }
 }

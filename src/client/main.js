@@ -53,7 +53,7 @@ document.querySelector("#app").innerHTML = `
        <section 
         slot="mainLeft"
         id="main-left">
-        <search-box>
+        <search-box value="test">
             <input type="text"
                 slot="searchbox"
                 class="border-b-2 border-gray-300 bg-transparent"

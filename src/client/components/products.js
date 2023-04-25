@@ -1,3 +1,5 @@
+import bus from "../eventBus";
+
 const template = document.createElement("template");
 
 template.innerHTML = `
@@ -87,9 +89,37 @@ function validateJson(data) {
 }
 
 /**
+ * @param {string} str
+ * @param {array} products
+ *
+ * @return {array}
+ */
+function doSearchProductByTitle(str, products) {
+  //
+  const minLength = 1;
+  const productLen = products.length;
+  let i = 0;
+
+  const found = [];
+  //
+  if (str.length >= minLength) {
+    while (i < productLen) {
+      const product = products[i];
+      const title = product?.title.toUpperCase() || "";
+      if (title.includes(str.toUpperCase())) {
+        found.push(product);
+      }
+      i++;
+    }
+  }
+
+  return found;
+}
+
+/**
  */
 export class Products extends HTMLElement {
-  products = [];
+  _products = [];
 
   /**
    *
@@ -104,6 +134,58 @@ export class Products extends HTMLElement {
    */
   constructor() {
     super();
+    bus.subscribe("filterProds", (value) => {
+      this.onFilterStrChange(value);
+    });
+  }
+
+  /**
+   *
+   */
+  get products() {
+    return this._products;
+  }
+
+  /**
+   * @param {object} value
+   */
+  set products(value) {
+    this._products = value;
+  }
+
+  /**
+   * @param {array} items
+   */
+  doProducts(items) {
+    const productsElm = document.querySelector(".products");
+    const products = [];
+
+    items.forEach((item) => {
+      products.push(`
+           <li class="grid-item">
+             <a data-category="${item.category}" href="#">
+               <img class="grid-item-img-mini" src="${item.thumbnail}" alt="${item.title}">
+             </a>
+             <ul>
+              <li>${item.title}</li>
+              <li class="product-price">$${item.price}</li>
+             </ul>
+           </li>
+        `);
+    });
+
+    productsElm.innerHTML = products.join("");
+  }
+
+  /**
+   * @param {string} value
+   */
+  onFilterStrChange(value) {
+    const filtered = value
+      ? doSearchProductByTitle(value, this.products)
+      : this.products;
+
+    this.doProducts(filtered);
   }
 
   /**
@@ -114,11 +196,7 @@ export class Products extends HTMLElement {
       const data = await response.json();
       const ok = validateJson(data);
 
-      if (ok) {
-        return data;
-      } else {
-        return [];
-      }
+      return ok ? data : [];
     } catch (e) {
       console.error(e.message);
     }
@@ -131,31 +209,8 @@ export class Products extends HTMLElement {
     if (!this.rendered) {
       this.render();
       this.rendered = true;
-
       this.products = (await this.fetchProducts()) || [];
-
-      const productsElm = document.querySelector(".products");
-      const products = [];
-
-      this.products.forEach((item) => {
-        products.push(`
-           <li class="grid-item">
-             <a data-category="${item.category}" href="#">
-               <img class="grid-item-img-mini" src="${item.thumbnail}" alt="${item.title}">
-             </a>
-             <ul>
-              <li>${item.title}</li>
-              <li class="product-price">$${item.price}</li>
-             </ul>
-           </li>
-        `);
-      });
-
-      productsElm.innerHTML = products.join("");
+      this.doProducts(this.products);
     }
   }
-
-  /**
-   *@param {evebt} e
-   */
 }
