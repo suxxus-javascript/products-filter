@@ -1,14 +1,16 @@
 import { SearchBox } from "./components/searchBox";
 import { MainMenu } from "./components/leftMenu";
 import { Products } from "./components/products";
+import { RangeSelector } from "./components/rangeSelector";
 //
 customElements.define("search-box", SearchBox);
 customElements.define("main-menu", MainMenu);
 customElements.define("main-products", Products);
+customElements.define("range-selector", RangeSelector);
 
 const template = document.createElement("template");
 template.innerHTML = `
-    <div class="redColor">
+    <div>
         <slot name="mainLeft"></slot>
         <slot name="mainRight"></slot>
     </div>
@@ -64,6 +66,9 @@ document.querySelector("#app").innerHTML = `
              class="main-menu">
             </ul>
         </main-menu>
+        <range-selector>
+          <h3 slot="title">Maximun Price</h3>
+        </range-selector>
        </section>
        <!-- -->
        <section 
