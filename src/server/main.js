@@ -20,10 +20,6 @@ async function doFetch(url) {
   }
 }
 
-app.get("/hello", (req, res) => {
-  res.send("Hello Vite!");
-});
-
 const prodData = (() => {
   let prods = [];
 
