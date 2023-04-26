@@ -120,6 +120,7 @@ function doSearchProductByTitle(str, products) {
  */
 export class Products extends HTMLElement {
   _products = [];
+  _category = "";
 
   /**
    *
@@ -135,6 +136,8 @@ export class Products extends HTMLElement {
   constructor() {
     super();
 
+    this._category = "All";
+
     // TODO remove declared function
     bus.subscribe("filterProds", (value) => {
       this.onFilterStrChange(value);
@@ -148,7 +151,7 @@ export class Products extends HTMLElement {
    *
    */
   get products() {
-    return this._products;
+    return JSON.parse(JSON.stringify(this._products));
   }
 
   /**
@@ -185,17 +188,27 @@ export class Products extends HTMLElement {
   /**
    *
    * @param {string} category
+   * @param {array} products
+   *
+   * @return {array} products
+   */
+  filteByCategory(category, products) {
+    return category.toUpperCase() === "ALL"
+      ? products
+      : products.filter(
+          (product) => product.category.toUpperCase() === category.toUpperCase()
+        );
+  }
+
+  /**
+   *
+   * @param {string} category
    */
   onCategoryChange(category) {
-    const products =
-      category.toUpperCase() === "ALL"
-        ? this.products
-        : this.products.filter(
-            (product) =>
-              product.category.toUpperCase() === category.toUpperCase()
-          );
-
+    const products = this.filteByCategory(category, this.products);
+    this._category = category;
     this.doProducts(products);
+    bus.publish("productsUpdated", products);
   }
 
   /**
@@ -208,7 +221,7 @@ export class Products extends HTMLElement {
     if (isValid) {
       const max = Math.ceil(value);
       const products = this.products.filter((product) => product.price <= max);
-      this.doProducts(products);
+      this.doProducts(this.filteByCategory(this._category, products));
     } else {
       console.error(`expected number type, got ${maxPrice}`);
     }
@@ -263,7 +276,7 @@ export class Products extends HTMLElement {
       this.render();
       this.rendered = true;
       this.products = this.onProductFetched((await this.fetchProducts()) || []);
-      bus.publish("fetchedProdsEvt", JSON.parse(JSON.stringify(this.products)));
+      bus.publish("productsUpdated", this.products);
       this.doProducts(this.products);
     }
   }

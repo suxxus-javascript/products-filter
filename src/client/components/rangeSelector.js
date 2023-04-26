@@ -47,7 +47,7 @@ export class RangeSelector extends HTMLElement {
   constructor() {
     super();
 
-    bus.subscribe("fetchedProdsEvt", (products) => {
+    bus.subscribe("productsUpdated", (products) => {
       this.setMaxAndMinPriceValues(getMaxAndMinPrices(products));
     });
   }
@@ -57,17 +57,17 @@ export class RangeSelector extends HTMLElement {
    * @param {object} range
    *
    */
-  setMaxAndMinPriceValues(range) {
+  setMaxAndMinPriceValues({ maxPrice, minPrice }) {
     //
     if (this.rendered) {
       //
       const input = this.shadowRoot.querySelector("#priceInput");
-      input.setAttribute("max", range.maxPrice);
-      input.setAttribute("min", range.minPrice);
-      input.setAttribute("value", (range.maxPrice - range.minPrice) / 2);
-      const span = this.shadowRoot.querySelector("#selectedPrice");
+      input.setAttribute("max", maxPrice);
+      input.setAttribute("min", minPrice);
+      input.setAttribute("value", Math.round(maxPrice));
 
-      span.textContent = range.maxPrice.toString();
+      const span = this.shadowRoot.querySelector("#selectedPrice");
+      span.textContent = maxPrice.toString();
     } else {
       //
       console.error("Not rendered");
