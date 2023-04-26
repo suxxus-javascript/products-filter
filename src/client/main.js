@@ -1,3 +1,5 @@
+import Navigo from "navigo";
+import bus from "./eventBus";
 import { SearchBox } from "./components/searchBox";
 import { MainMenu } from "./components/leftMenu";
 import { Products } from "./components/products";
@@ -39,15 +41,15 @@ class MainPage extends HTMLElement {
     this.categories = [
       {
         title: "All",
-        link: "#",
+        link: "/products/all",
       },
       {
         title: "Smartphones",
-        link: "#",
+        link: "/products/smartphones",
       },
       {
         title: "Laptops",
-        link: "#",
+        link: "/products/laptops",
       },
     ];
   }
@@ -85,7 +87,11 @@ class MainPage extends HTMLElement {
 
 customElements.define("main-page", MainPage);
 
-document.querySelector("#app").innerHTML = `
+/**
+ *
+ */
+function createApp() {
+  document.querySelector("#app").innerHTML = `
     <main-page>
        <section 
         slot="mainLeft"
@@ -120,3 +126,19 @@ document.querySelector("#app").innerHTML = `
        </section>
     </main-page>
 `;
+}
+
+const router = new Navigo("/");
+
+router.on("/welcome", () => {
+  console.log(111);
+  createApp();
+});
+
+router.on("/products/:category", (match) => {
+  const { category } = match.data;
+  bus.publish("filterByCategory", category);
+});
+
+router.resolve();
+router.navigate("/welcome");

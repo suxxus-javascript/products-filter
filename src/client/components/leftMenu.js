@@ -43,7 +43,7 @@ export class MainMenu extends HTMLElement {
       this.categories.forEach((item) => {
         menuItems.push(`
          <li class="border-b-2 border-gray-200 mb-4">
-            <a href="${item.link}" class="block">${item.title}</a>
+            <a href="${item.link}" class="block" data-navigo>${item.title}</a>
          </li>
         `);
       });

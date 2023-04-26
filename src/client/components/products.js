@@ -141,6 +141,7 @@ export class Products extends HTMLElement {
     });
 
     bus.subscribe("filterByPriceEvt", this.onPriceRangeChange.bind(this));
+    bus.subscribe("filterByCategory", this.onCategoryChange.bind(this));
   }
 
   /**
@@ -179,6 +180,22 @@ export class Products extends HTMLElement {
     });
 
     productsElm.innerHTML = products.join("");
+  }
+
+  /**
+   *
+   * @param {string} category
+   */
+  onCategoryChange(category) {
+    const products =
+      category.toUpperCase() === "ALL"
+        ? this.products
+        : this.products.filter(
+            (product) =>
+              product.category.toUpperCase() === category.toUpperCase()
+          );
+
+    this.doProducts(products);
   }
 
   /**
