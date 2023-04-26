@@ -137,6 +137,8 @@ export class Products extends HTMLElement {
     bus.subscribe("filterProds", (value) => {
       this.onFilterStrChange(value);
     });
+
+    bus.subscribe("filterByPriceEvt", this.onPriceRangeChange.bind(this));
   }
 
   /**
@@ -178,6 +180,22 @@ export class Products extends HTMLElement {
   }
 
   /**
+   * @param {number} value
+   */
+  onPriceRangeChange(value) {
+    const maxPrice = parseFloat(value);
+    const isValid = typeof maxPrice === "number" && !isNaN(maxPrice);
+
+    if (isValid) {
+      const max = Math.ceil(value);
+      const products = this.products.filter((product) => product.price <= max);
+      this.doProducts(products);
+    } else {
+      console.error(`expected number type, got ${maxPrice}`);
+    }
+  }
+
+  /**
    * @param {string} value
    */
   onFilterStrChange(value) {
@@ -189,6 +207,7 @@ export class Products extends HTMLElement {
   }
 
   /**
+   *
    */
   async fetchProducts() {
     try {
@@ -210,6 +229,9 @@ export class Products extends HTMLElement {
       this.render();
       this.rendered = true;
       this.products = (await this.fetchProducts()) || [];
+
+      bus.publish("fetchedProdsEvt", JSON.parse(JSON.stringify(this.products)));
+
       this.doProducts(this.products);
     }
   }
