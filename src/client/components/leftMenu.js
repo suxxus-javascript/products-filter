@@ -27,16 +27,6 @@ export class MainMenu extends HTMLElement {
    */
   constructor() {
     super();
-    this.categories = [
-      {
-        title: "All",
-        link: "#",
-      },
-      {
-        title: "Smartphones",
-        link: "#",
-      },
-    ];
   }
 
   /**

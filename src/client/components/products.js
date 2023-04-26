@@ -134,6 +134,8 @@ export class Products extends HTMLElement {
    */
   constructor() {
     super();
+
+    // TODO remove declared function
     bus.subscribe("filterProds", (value) => {
       this.onFilterStrChange(value);
     });
@@ -207,6 +209,21 @@ export class Products extends HTMLElement {
   }
 
   /**
+   * @param {array} products
+   *
+   * @return {array} with filtered products
+   */
+  onProductFetched(products) {
+    const categoriesNames = this.categories.map((cat) =>
+      cat.title.toUpperCase()
+    );
+
+    return products.filter(({ category }) =>
+      categoriesNames.includes(category.toUpperCase())
+    );
+  }
+
+  /**
    *
    */
   async fetchProducts() {
@@ -228,10 +245,8 @@ export class Products extends HTMLElement {
     if (!this.rendered) {
       this.render();
       this.rendered = true;
-      this.products = (await this.fetchProducts()) || [];
-
+      this.products = this.onProductFetched((await this.fetchProducts()) || []);
       bus.publish("fetchedProdsEvt", JSON.parse(JSON.stringify(this.products)));
-
       this.doProducts(this.products);
     }
   }

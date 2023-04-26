@@ -20,6 +20,8 @@ template.innerHTML = `
  *
  */
 class MainPage extends HTMLElement {
+  _categories = [];
+
   /**
    * render shadow
    */
@@ -33,6 +35,35 @@ class MainPage extends HTMLElement {
    */
   constructor() {
     super();
+
+    this.categories = [
+      {
+        title: "All",
+        link: "#",
+      },
+      {
+        title: "Smartphones",
+        link: "#",
+      },
+      {
+        title: "Laptops",
+        link: "#",
+      },
+    ];
+  }
+
+  /**
+   *
+   */
+  get categories() {
+    return JSON.parse(JSON.stringify(this._categories));
+  }
+
+  /**
+   * @param {array} value
+   */
+  set categories(value) {
+    this._categories = value;
   }
 
   /**
@@ -42,6 +73,12 @@ class MainPage extends HTMLElement {
     if (!this.rendered) {
       this.render();
       this.rendered = true;
+
+      const mainMenu = document.querySelector("main-menu");
+      mainMenu.categories = this.categories;
+
+      const mainProducts = document.querySelector("main-products");
+      mainProducts.categories = this.categories;
     }
   }
 }
